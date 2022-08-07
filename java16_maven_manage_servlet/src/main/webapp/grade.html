@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>
+        function showGrade() {
+            $.getJSON("gradeServlet", { tag: "showGrade"}, function(json){
+                var dataTable = $("#dataTable");
+                $("#dataTable tr").remove();
+                var str = "";
+                str += "<tr>";
+                str += "<td>年级:</td>";
+                str += "<td>"
+                str += "<select name='studentGrade' id='studentGrades'>";
+                for (i = 0; i < json.grades.length; i++) {
+                        str += "<option value='" + json.grades[i].gradeId + "'>" + json.grades[i].gradeName + "</option>";
+                }
+                str += "</select>"
+                str += "</td>";
+                str += "</tr>";
+
+                str += "<tr>";
+                str+="<td>修改</td>";
+                str += "<td><input type='text' name='gradeName'/></td>"
+                str += "</tr>"
+                dataTable.append(str);
+            });
+        }
+
+
+        function loadLink() {
+            var studentGrade =$("#studentGrades").val();
+
+            $("#del").attr("href","gradeServlet?tag=del&gradeId="+studentGrade)
+        }
+
+    </script>
+</head>
+<body onload="showGrade();">
+<form action="gradeServlet?tag=edit" method="post">
+    <p>请选择修改</p>
+    <table id="dataTable">
+    </table>
+    <input type="submit" value="修改" onclick="obtain();">
+</form>
+<div>
+    <a href="#" id="del" onclick="loadLink();">删除</a>
+    <a href="gradeServlet?tag=add">增加年级</a>
+    <a href="studentServlet?tag=index">首页</a>
+</div>
+</body>
+</html>

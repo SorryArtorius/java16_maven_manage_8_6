@@ -1,0 +1,4 @@
+# 项目排除路径
+/java16_maven_manage_dao/target/
+/java16_maven_manage_service/target/
+/java16_maven_manage_servlet/target/

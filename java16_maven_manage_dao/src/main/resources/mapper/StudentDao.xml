@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.j16.dao.StudentDao">
+    <resultMap id="studentMapper" type="student">
+        <association property="grade" column="gradeId"
+                     select="com.j16.dao.GradeDao.getGrade"/>
+    </resultMap>
+
+    <select id="getStudents" resultMap="studentMapper">
+        select *
+        from student
+    </select>
+
+    <select id="getStudentList" resultMap="studentMapper">
+        select *
+        from student
+    </select>
+
+
+    <delete id="batchDeletion" parameterType="list">
+        delete from student
+        <where>
+            studentNo in
+            <foreach collection="list" item="i" open="(" separator="," close=")">
+                #{i}
+            </foreach>
+        </where>
+    </delete>
+
+    <select id="getStudent" parameterType="student" resultMap="studentMapper">
+        select * from student <where>
+        studentNo = #{studentNo}
+    </where>
+    </select>
+
+
+    <update id="updateStudent" parameterType="student">
+        update student student set studentName=#{studentName},loginPwd=#{loginPwd},sex=#{sex},gradeId=#{grade.gradeId},phone=#{phone},
+        address=#{address},bornDate=#{bornDate},email=#{email}, identityCard=#{identityCard} where studentNo=#{studentNo}
+    </update>
+
+    <insert id="insertStudent" parameterType="student">
+        insert into student values(null,#{studentName},#{loginPwd},#{sex},#{grade.gradeId}
+        ,#{phone},#{address}
+        ,#{bornDate},#{email},#{identityCard})
+    </insert>
+
+
+    <delete id="deleteStudent" parameterType="int">
+        delete from student <where>
+        studentNo = #{studentNo}
+    </where>
+    </delete>
+</mapper>

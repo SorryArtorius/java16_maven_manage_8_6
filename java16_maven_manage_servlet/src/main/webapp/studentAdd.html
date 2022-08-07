@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="js/jquery-3.6.0.min.js"></script>
+    <script>
+        function init() {
+            $.getJSON("studentServlet", {tag: "add"}, function (json) {
+                var dataTable = $("#dataTable");
+                $("#dataTable tr").remove();
+                var str = "";
+
+                str += "<tr>";
+                str += "<td>姓名:</td><td><input type='text' name='studentName'></td>";
+                str += "</tr>";
+
+
+                str += "<tr>";
+                str += "<td>性别:</td><td><input type='radio' name='studentSex'  value='男' checked>男" +
+                    "<input type='radio' name='studentSex'  value='女' >女</td>";
+                str += "</tr>";
+
+
+                str += "<tr>";
+                str += "<td>密码:</td><td><input type='text' name='studentPwd' ></td>";
+                str += "</tr>";
+
+                str += "<tr>";
+                str += "<td>年级:</td>";
+                str += "<td>"
+                str += "<select name='studentGrade'>";
+                for (i = 0; i < json.grades.length; i++) {
+                    if (json.studentGrade == json.grades[i].gradeName) {
+
+                        str += "<option value='" + json.grades[i].gradeId + "' selected>" + json.grades[i].gradeName + "</option>";
+                    } else {
+                        str += "<option value='" + json.grades[i].gradeId + "'>" + json.grades[i].gradeName + "</option>";
+                    }
+                }
+                str += "</td>";
+                str += "</td>"
+                str += "</tr>";
+
+                str += "<tr>";
+                str += "<td>电话:</td><td><input type='text' name='studentPhone' ></td>";
+                str += "</tr>";
+
+                str += "<tr>";
+                str += "<td>地址:</td><td><input type='text' name='studentAddress'  ></td>";
+                str += "</tr>";
+
+                str += "<tr>";
+                str += "<td>出生日期:</td><td><input type='text' name='studentBornDate' ></td>";
+                str += "</tr>";
+
+                str += "<tr>";
+                str += "<td>电子邮箱:</td><td><input type='text' name='studentEmail'  ></td>";
+                str += "</tr>";
+
+
+                str += "<tr>";
+                str += "<td>身份证:</td><td><input type='text' name='studentIdentityCard'></td>";
+                str += "</tr>";
+
+                dataTable.append(str);
+            });
+
+        }
+    </script>
+</head>
+<body onload="init();">
+<form action="studentServlet?tag=add" method="post">
+    <table id="dataTable">
+    </table>
+    <input type="submit" value="添加">
+</form>
+</body>
+</html>

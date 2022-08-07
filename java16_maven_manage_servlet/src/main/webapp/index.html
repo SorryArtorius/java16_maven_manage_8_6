@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>显示所有学生</title>
+    <script src="js/jquery-3.6.0.min.js"></script>
+
+    <script>
+        function initData(pageIndex) {
+            $.getJSON("studentServlet",
+                {tag: "show", pageIndex: pageIndex},
+                function (json) {
+                    var tr = $("#tr");
+                    /**
+                     * 删除表第一行之后的行数
+                     */
+                    $("#tr tr:gt(0)").remove();
+                    var str = "";
+                    for (var i = 0; i < json.list.length; i++) {
+                        str += "<tr>";
+                        str += "<td><input type='checkbox' name='all' onclick='changeBox()' value='" + json.list[i].studentNo + "' ></td>";
+                        str += "<td>" + json.list[i].studentNo + "</td>";
+                        str += "<td>" + json.list[i].studentName + "</td>";
+                        str += "<td>" + json.list[i].sex + "</td>";
+                        str += "<td>" + json.list[i].phone + "</td>";
+                        str += "<td>" + json.list[i].address + "</td>";
+                        str += "<td><a href='studentServlet?tag=edit&studentNo="+json.list[i].studentNo+"'>编辑</a>|<a href='studentServlet?tag=dell&studentNo="+json.list[i].studentNo+"'>删除</a></td>";
+                        str += "</tr>";
+                    }
+
+                    tr.append(str);
+                    str = "";
+                    var pagesNext = $("#pagesNext");
+                    document.getElementById("pagesNext").innerHTML = "";
+                    str += "共" + json.total + "条数据";
+                    str += "<button onclick='initData(1)'>首页</button>";
+                    if (json.hasPreviousPage) {
+                        str += "<a href='#' onclick='return initData(" + json.prePage + ")'>上一页</a>";
+                    } else {
+                        str += "<a href='#' onclick=' return initData(1)'>上一页</a>";
+                    }
+                    str += json.pageNum + "/" + json.pages;
+                    if (json.hasNextPage) {
+                        str += "<a href='#' onclick='return initData(" + (json.nextPage) + ")'>下一页</a>";
+                    } else {
+                        str += "<a href='#' onclick=' return initData(" + json.pages + ")'>下一页</a>";
+                    }
+                    str += "<button onclick='initData(" + json.pages + ")'>末页</button>";
+                    pagesNext.append(str);
+                    return false;
+                });
+        }
+
+
+        function checkAll(all) {
+            var checked = document.getElementsByTagName("input");
+            for (var i = 0; i < checked.length; i++) {
+                if (checked[i].type == "checkbox") {
+                    checked[i].checked = all.checked;
+                }
+            }
+        }
+
+        function changeBox() {
+            var boolean = true;
+            var changeBox = document.getElementsByName("all");
+            for (var i = 0; i < changeBox.length; i++) {
+                if (changeBox[i].checked == false) {
+                    boolean = false;
+                    break;
+                }
+            }
+            document.getElementById("tag").checked = boolean;
+        }
+
+        function deleteAll() {
+            var checked = document.getElementsByName("all");
+            var str = "";
+            for (var i = 0; i < checked.length; i++) {
+                if (checked[i].checked) {
+                    str += checked[i].value + ",";
+                }
+            }
+            str = str.substring(0, str.length - 1)
+            $.get("studentServlet", {tag: "del", studentNoList: str},
+                function (bool) {
+                });
+        }
+    </script>
+</head>
+<body onload="initData(1);">
+<table border="1" id="tr" style="text-align:center" width="1000px">
+    <tr>
+        <th><input id="tag" onclick='checkAll(this)' type="checkbox"></th>
+        <th>学号</th>
+        <th>姓名</th>
+        <th>性别</th>
+        <th>电话</th>
+        <th>住址</th>
+        <th>操作</th>
+    </tr>
+</table>
+<div id="pagesNext">
+</div>
+<div>
+    <button onclick="deleteAll()" type="button">删除所选</button>
+</div>
+<div>
+    <a href="studentServlet?tag=addJump">添加</a>
+    <a href="gradeServlet?tag=show">年级管理</a>
+</div>
+</body>
+</html>
